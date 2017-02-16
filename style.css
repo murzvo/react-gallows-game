@@ -1,0 +1,34 @@
+.hello {
+  font-size: 34px;
+}
+
+.red {
+  color: red;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.center {
+  text-align: center;
+}
+
+.image_holder img {
+  height: 400px;
+}
+
+.word span {
+  padding: 20px;
+  background-color: gray;
+  font-size: 26px;
+}
+
+.word span:hover {
+  background-color: green;
+  cursor: pointer;
+}
+
+.word_display {
+  display: block;
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>I'm in a React app!</title>
+  </head>
+  <body>
+    <div id="react-app"></div>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+  </body>
+</html>
+
+<script type="text/babel">
+  var steps = [
+    'http://i.piccy.info/i9/05976332b2fd731cb3fe8305a30660a0/1487189026/3905/1119384/step1.jpg',
+    'http://i.piccy.info/i9/1a4c8b546f2ec2a1fddf3896d1f1c67d/1487189058/4632/1119384/step2.jpg',
+    'http://i.piccy.info/i9/0c4cabfefc5db77f3f3e988e6adc8866/1487189069/5250/1119384/step3.jpg',
+    'http://i.piccy.info/i9/aa3c7ec594161d7955db30b71754f553/1487189085/4908/1119384/step4.jpg',
+    'http://i.piccy.info/i9/4c4ad2f7156f1b115cb43a52c77e66ec/1487189097/5009/1119384/step5.jpg',
+    'http://i.piccy.info/i9/f6a65c32a932bcf88934f3bf72bd70a9/1487189184/7434/1119384/step6.jpg'
+  ];
+
+  var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+                 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
+  var words = ['hurricane', 'regulation', 'witness', 'standpoint', 'statement']
+
+
+
+  var ImageHolder = React.createClass({
+    render: function() {
+      return (
+        <div className="image_holder center">
+          <img src={steps[this.props.tries]} />
+        </div>
+      )
+    }
+  })
+
+  var Word = React.createClass({
+    render: function() {
+      return (
+        <div className="word center">
+          Allah Akbar
+        </div>
+      )
+    }
+  })
+
+  var Alphabet = React.createClass({
+    render: function() {
+      var self = this;
+      return (
+        <div className="word center">
+          {alphabet.map(function(char, index) {
+            return <span key={index} className="char" onClick={function() {self.props.onWordSelect(char)}}>{char}</span>
+          })}
+        </div>
+      )
+    }
+  })
+
+  var WordDisplay = React.createClass({
+    renderChars: function() {
+      var chars = '';
+      this.props.word.split('').map(function(char){
+        if (this.props.correctChars.indexOf(char) === -1) {
+          chars += 'X';
+        } else {
+          chars += char;
+        }
+      }, this)
+      return chars;
+    },
+
+    render: function() {
+      console.log(this.props.word);
+      return (
+        <div className="word_display center">
+          {this.renderChars()}
+        </div>
+      )
+    }
+  })
+
+  var NewGame = React.createClass({
+    render: function() {
+      return (
+        <div className="center">
+          <img src='http://i.piccy.info/i9/e5f7bc90242a15f9a2b3f82275dd8531/1487252444/36925/1119384/hqdefault.jpg' />
+          <div>
+            <button onClick={this.props.onNewGame}>New Game</button>
+          </div>
+        </div>
+        )
+    },
+  })
+
+  var Game = React.createClass({
+    getInitialState() {
+      return {
+        correctChars: [],
+        wrongChars: [],
+        tries: 0,
+      }
+    },
+
+    onCharSelect(char) {
+      console.log(char);
+      if (this.props.word.indexOf(char) === -1 && this.state.wrongChars.indexOf(char) === -1) {
+        var wrongChars = this.state.wrongChars;
+        wrongChars.push(char);
+        this.setState({
+          tries: this.state.tries + 1,
+          wrongChars: wrongChars,
+        });
+      } else if (this.state.correctChars.indexOf(char) === -1){
+        var correctChars = this.state.correctChars;
+        correctChars.push(char);
+        this.setState({ correctChars: correctChars });
+      }
+    },
+
+    onNewGame() {
+      this.setState(this.getInitialState());
+      this.props.onNewGame();
+    },
+
+    render: function() {
+      return (
+        <div>
+          <ImageHolder tries={this.state.tries} />
+          <WordDisplay word={this.props.word} correctChars={this.state.correctChars} />
+          <br />
+          {this.state.tries >= 5 || this.state.correctChars.length === this.props.word.length ?
+            <div className="center">
+              <div>{this.props.word}</div>
+              <button onClick={this.onNewGame}>New Game!</button>
+            </div>
+            :
+            <Alphabet onWordSelect={this.onCharSelect} />}
+        </div>
+      )
+    }
+  })
+
+  var Container = React.createClass({
+    propTypes: {
+      name: React.PropTypes.string.isRequired,
+    },
+
+    getInitialState: function() {
+      return {
+        gameStarted: false,
+        word: words[Math.floor(Math.random() * words.length)],
+      }
+    },
+
+    onNewGame: function() {
+      this.setState({
+        gameStarted: true,
+        words: words[Math.floor(Math.random() * words.length)],
+      });
+    },
+
+    render: function() {
+      return (
+        <div className="center">
+          <div className="hello">Welcome to <span className="red bold">Gallows</span></div>
+          {this.state.gameStarted ?
+            <Game word={this.state.word} onNewGame={this.onNewGame} />
+            :
+            <NewGame onNewGame={this.onNewGame} />}
+        </div>
+        )
+    },
+  });
+
+
+  ReactDOM.render(React.createElement(Container, {}), document.getElementById('react-app'))
+
+</script>
