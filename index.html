@@ -26,30 +26,34 @@
   var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                  's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
-  var words = ['hurricane', 'regulation', 'witness', 'standpoint', 'statement']
+  var words = ['hurricane', 'regulation', 'witness', 'standpoint', 'statement', 'methodology', 'motivation',
+              'lecture', 'introduction', 'homework', 'disaster']
 
-  var ImageHolder = React.createClass({
-    render: function() {
-      return (
-        <div className="image_holder center">
-          <img src={steps[this.props.tries]} />
-        </div>
-      )
-    }
-  })
+  function ImageHolder(props) {
+    return (<div className="image_holder center"><img src={steps[props.tries]} /></div>)
+  }
 
-  var Alphabet = React.createClass({
-    render: function() {
-      var self = this;
-      return (
-        <div className="word center">
-          {alphabet.map(function(char, index) {
-            return <span key={index} className="char" onClick={function() {self.props.onWordSelect(char)}}>{char}</span>
-          })}
+  function Alphabet(props) {
+    // yay! there aren't self = this!
+    return (
+      <div className="word center">
+        {alphabet.map(function(char, index) {
+          return <span key={index} className="char" onClick={function() {props.onWordSelect(char)}}>{char}</span>
+        })}
+      </div>
+    )
+  }
+
+  function NewGame(props){
+    return (
+      <div className="center">
+        <img src='http://i.piccy.info/i9/e5f7bc90242a15f9a2b3f82275dd8531/1487252444/36925/1119384/hqdefault.jpg' />
+        <div>
+          <button onClick={props.onNewGame}>New Game</button>
         </div>
+      </div>
       )
-    }
-  })
+  }
 
   var WordDisplay = React.createClass({
     renderChars: function() {
@@ -72,19 +76,6 @@
         </div>
       )
     }
-  })
-
-  var NewGame = React.createClass({
-    render: function() {
-      return (
-        <div className="center">
-          <img src='http://i.piccy.info/i9/e5f7bc90242a15f9a2b3f82275dd8531/1487252444/36925/1119384/hqdefault.jpg' />
-          <div>
-            <button onClick={this.props.onNewGame}>New Game</button>
-          </div>
-        </div>
-        )
-    },
   })
 
   var Game = React.createClass({
@@ -136,10 +127,6 @@
   })
 
   var Container = React.createClass({
-    propTypes: {
-      name: React.PropTypes.string.isRequired,
-    },
-
     getInitialState: function() {
       return {
         gameStarted: false,
@@ -166,7 +153,6 @@
         )
     },
   });
-
 
   ReactDOM.render(React.createElement(Container, {}), document.getElementById('react-app'))
 
